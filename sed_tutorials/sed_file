@@ -1,0 +1,10 @@
+cat text | sed 's/t/T/'
+--------------------------
+1st occurance of t in text file in each line is T
+-------------------------------------------------------
+
+10 Tiny toes
+This is that
+5 funny 0
+one Two three 
+Tree twice
