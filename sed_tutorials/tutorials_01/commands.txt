@@ -1,0 +1,12 @@
+Replacing or substituting string:
+---------------------------------
+$sed 's/unix/linux/' geekfile.txt-->replaces the word “unix” with “linux” in the file.
+By default, the sed command replaces the first occurrence of the pattern in each line and it won’t replace the second, third…occurrence in the line.
+
+Replacing the nth occurrence of a pattern in a line :
+-------------------------------------------------------
+$sed 's/unix/linux/2' geekfile.txt-->replaces the second occurrence of the word “unix” with “linux” in a line. 
+
+Replacing all the occurrence of the pattern in a line :
+-------------------------------------------------------
+$sed 's/unix/linux/g' geekfile.txt-->Replacing all the occurrence of the pattern in a line
