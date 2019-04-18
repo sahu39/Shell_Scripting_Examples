@@ -1,0 +1,430 @@
+link for description:(part-1)
+-----------------------
+https://www.tecmint.com/use-linux-awk-command-to-filter-text-string-in-files/
+
+Regular expressions are made of:
+Ordinary characters such as space, underscore(_), A-Z, a-z, 0-9.
+-Meta characters that are expanded to ordinary characters, they include:
+-(.) it matches any single character except a newline.
+-(*) it matches zero or more existences of the immediate character preceding it.
+-[ character(s) ] it matches any one of the characters specified in character(s), one can also use a hyphen (-) to mean a range of characters such as [a-f], [1-5], and so on.
+-^ it matches the beginning of a line in a file.
+-$ matches the end of line in a file.
+-\ it is an escape character
+
+
+syntax "awk":
+------------
+awk 'scripts' filename
+
+scipts=/pattern/action
+pattern-->regular expression
+
+How "awk" works:
+----------------
+It works by reading a given line in the file, makes a copy of the line and then executes the script on the line. This is repeated on all the lines in the file.
+
+
+e.g 1:
+------
+awk '//{print}' /etc/hosts
+op:
+----
+127.0.0.1   localhost
+127.0.1.1   rakesh-desktop
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+http://reviews.qolsys-rb.com
+192.168.100.242  reviews.qolsys-rb.com 
+
+
+
+e.g 2:
+-------
+awk '/localhost/{print}' /etc/hosts
+op:
+---
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/localhost/{print}' /etc/hosts
+127.0.0.1   localhost
+::1     ip6-localhost ip6-loopback
+
+e.g 3:
+------
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/l.c/{print}' /etc/hosts
+127.0.0.1   localhost
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+
+
+e.g 4:
+------
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/l*c/{print}' /etc/hosts
+127.0.0.1   localhost
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+http://reviews.qolsys-rb.com
+192.168.100.242  reviews.qolsys-rb.com 
+
+
+
+e.g 5:
+-------
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/[al1]/{print}' /etc/hosts
+127.0.0.1   localhost
+127.0.1.1   rakesh-desktop
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+http://reviews.qolsys-rb.com
+192.168.100.242  reviews.qolsys-rb.com 
+
+
+e.g 6:
+------
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/[i][p]/{print}' /etc/hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/[r][e]/{print}' /etc/hosts
+# The following lines are desirable for IPv6 capable hosts
+ff00::0 ip6-mcastprefix
+http://reviews.qolsys-rb.com
+192.168.100.242  reviews.qolsys-rb.com 
+
+
+
+e.g 7:
+-------
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/[0-9]/{print}' /etc/hosts
+127.0.0.1   localhost
+127.0.1.1   rakesh-desktop
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+192.168.100.242  reviews.qolsys-rb.com
+
+
+e.g 8:
+-------
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/^fe/{print}' /etc/hosts
+fe00::0 ip6-localnet
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/^ff/{print}' /etc/hosts
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+
+
+e.g 9:
+-----
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/ost$/{print}' /etc/hosts
+127.0.0.1   localhost
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/com$/{print}' /etc/hosts
+http://reviews.qolsys-rb.com
+
+
+
+
+e.g 10:
+------
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '//{print}' test.txt 
+Buy Now $25.00 REDHAT RACHA/RHCE 7
+Hosting 25% off
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/\%/{print}' test.txt 
+Hosting 25% off
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/\$25/{print}' test.txt 
+Buy Now $25.00 REDHAT RACHA/RHCE 7
+
+
+
+link for description:(part-2)
+---------------------
+https://www.tecmint.com/awk-print-fields-columns-with-space-separator/
+e.g 11:(awk with IFS(whitespace)):
+-------
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ cat tecmintinfo.txt 
+Tecmint.com is the fastest growing Linux Community Online.
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ cat tecmintinfo.txt | awk '//{print}'
+Tecmint.com is the fastest growing Linux Community Online.
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '//{print}' tecmintinfo.txt 
+Tecmint.com is the fastest growing Linux Community Online.
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '//{print $1 $2 $3}' tecmintinfo.txt 
+Tecmint.comisthe
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '//{print $1, $2, $3}' tecmintinfo.txt 
+Tecmint.com is the
+e.g 12:
+-------
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ cat myshoping.list 
+No  Item_Name               Unit_Price  Quantity    Price
+1   Mouse                   #20,000        1        #20,000
+2   Monitor                 #500,000       1        #500,000
+3   RAM_Chips               #150,000       2        #300,000
+4   Ethernet_Cables         #30,000        4        #120,000        
+
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '//{print $1, $2, $3;}' myshoping.list 
+No Item_Name Unit_Price
+1 Mouse #20,000
+2 Monitor #500,000
+3 RAM_Chips #150,000
+4 Ethernet_Cables #30,000
+  
+  rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '//{print $2, $3;}' myshoping.list 
+  Item_Name Unit_Price
+  Mouse #20,000
+  Monitor #500,000
+  RAM_Chips #150,000
+  Ethernet_Cables #30,000
+   
+   rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '//{printf "%-10s %s\n",$2,$3}' myshoping.list 
+   Item_Name  Unit_Price
+   Mouse      #20,000
+   Monitor    #500,000
+   RAM_Chips  #150,000
+   Ethernet_Cables #30,000
+              
+              rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '//{printf "%-15s %s\n",$2,$3}' myshoping.list 
+              Item_Name       Unit_Price
+              Mouse           #20,000
+              Monitor         #500,000
+              RAM_Chips       #150,000
+              Ethernet_Cables #30,000
+                              
+                              rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '//{printf "%-20s %s\n",$2,$3}' myshoping.list 
+                              Item_Name            Unit_Price
+                              Mouse                #20,000
+                              Monitor              #500,000
+                              RAM_Chips            #150,000
+                              Ethernet_Cables      #30,000
+
+
+link for description:(part-3)
+--------------------
+https://www.tecmint.com/awk-filter-text-or-string-using-patterns/
+
+e.g 13:
+-------
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ cat food_prices.list 
+No  Item_Name       Quantity    Price
+1   Mangoes            10       $2.45
+2   Apples             20       $1.50
+3   Bananas            5        $0.90
+4   Pineapples         10       $3.46
+5   Oranges            10       $0.78
+6   Tomatoes           5        $0.55
+7   Onions             5        $0.45
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/\$[2-9]\.[0-9][0-9]/{print}' food_prices.list 
+1   Mangoes            10       $2.45
+4   Pineapples         10       $3.46
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/\$[2-9]\.[0-9][0-9]/{printf "%s %s\n",$0,"*";} /\$[0-1]\.[0-9][0-9]/{print ;}' food_prices.list 
+1   Mangoes            10       $2.45 *
+2   Apples             20       $1.50
+3   Bananas            5        $0.90
+4   Pineapples         10       $3.46 *
+5   Oranges            10       $0.78
+6   Tomatoes           5        $0.55
+7   Onions             5        $0.45
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '/ *\$[2-9]\.[0-9][0-9] */ { print $0 "*" ; } / *\$[0-1]\.[0-9][0-9] */ { print ; }' food_prices.list 
+1   Mangoes            10       $2.45*
+2   Apples             20       $1.50
+3   Bananas            5        $0.90
+4   Pineapples         10       $3.46*
+5   Oranges            10       $0.78
+6   Tomatoes           5        $0.55
+7   Onions             5        $0.45
+
+
+
+
+link for description:(part-4)
+----------------------
+https://www.tecmint.com/comparison-operators-in-awk/
+
+Comparison operators in Awk are used to compare the value of numbers or strings and they include the following:
+
+    > – greater than
+    < – less than
+    >= – greater than or equal to
+    <= – less than or equal to
+    == – equal to
+    != – not equal to
+    some_value ~ / pattern/ – true if some_value matches pattern
+    some_value !~ / pattern/ – true if some_value does not match pattern
+
+
+General syntax for using comparison operators in Awk is:
+expression { actions; }
+
+
+
+e.g 14:
+-------
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ vim food_list.txt
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ cat food_list.txt 
+No      Item_Name               Quantity        Price
+1       Mangoes                    45           $3.45
+2       Apples                     25           $2.45
+3       Pineapples                 5            $4.45
+4       Tomatoes                   25           $3.45
+5       Onions                     15           $1.45
+6       Bananas                    30           $3.45
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '$3<=20 printf{"%s\t%s\n",$0,"**";} $3>20 {print $0;}' food_list.txt 
+awk: line 1: syntax error at or near printf
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '$3<=20 {printf "%s\t%s\n",$0,"**";} $3>20 {print $0;}' food_list.txt 
+No      Item_Name               Quantity        Price
+1       Mangoes                    45           $3.45
+2       Apples                     25           $2.45
+3       Pineapples                 5            $4.45   **
+4       Tomatoes                   25           $3.45
+5       Onions                     15           $1.45   **
+6       Bananas                    30           $3.45
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '$3<=30 {printf "%s\t%s\n",$0,"**";} $3>20 {print $0;}' food_list.txt 
+No      Item_Name               Quantity        Price
+1       Mangoes                    45           $3.45
+2       Apples                     25           $2.45   **
+2       Apples                     25           $2.45
+3       Pineapples                 5            $4.45   **
+4       Tomatoes                   25           $3.45   **
+4       Tomatoes                   25           $3.45
+5       Onions                     15           $1.45   **
+6       Bananas                    30           $3.45   **
+6       Bananas                    30           $3.45
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '//{print $0}' food_list.txt 
+No      Item_Name               Quantity        Price
+1       Mangoes                    45           $3.45
+2       Apples                     25           $2.45
+3       Pineapples                 5            $4.45
+4       Tomatoes                   25           $3.45
+5       Onions                     15           $1.45
+6       Bananas                    30           $3.45
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '//{print}' food_list.txt 
+No      Item_Name               Quantity        Price
+1       Mangoes                    45           $3.45
+2       Apples                     25           $2.45
+3       Pineapples                 5            $4.45
+4       Tomatoes                   25           $3.45
+5       Onions                     15           $1.45
+6       Bananas                    30           $3.45
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '$3<=20 {printf "%s\t%s\n", $0, "TRUE";} $3>20 {print}' food_list.txt 
+No      Item_Name               Quantity        Price
+1       Mangoes                    45           $3.45
+2       Apples                     25           $2.45
+3       Pineapples                 5            $4.45   TRUE
+4       Tomatoes                   25           $3.45
+5       Onions                     15           $1.45   TRUE
+6       Bananas                    30           $3.45
+
+
+link for description:(part-5)
+------------------------------
+https://www.tecmint.com/combine-multiple-expressions-in-awk/
+
+e.g 15:
+------
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ cat techmintdeal.list 
+No      Name                                    Price           Type
+1       Mac_OS_X_Cleanup_Suite                  $9.99           Software
+2       Basics_Notebook                         $14.99          Lifestyle
+3       Tactical_Pen                            $25.99          Lifestyle
+4       Scapple                                 $19.00          Unknown
+5       Nano_Tool_Pack                          $11.99          Unknown
+6       Ditto_Bluetooth_Altering_Device         $33.00          Tech
+7       Nano_Prowler_Mini_Drone                 $36.99          Tech
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '(/\$[2-9][0-9]\.[0-9][0-9]/) && ($4=="Tech") {print}' techmintdeal.list 
+6       Ditto_Bluetooth_Altering_Device         $33.00          Tech
+7       Nano_Prowler_Mini_Drone                 $36.99          Tech
+
+
+
+link for description:(part-6)
+------------------------------
+https://www.tecmint.com/use-next-command-with-awk-in-linux/ 
+
+e.g 16:
+-------
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ cat food_list_2.txt 
+No      Item_Name               Price           Quantity
+1       Mangoes                 $3.45              5
+2       Apples                  $2.45              25
+3       Pineapples              $4.45              55
+4       Tomatoes                $3.45              25
+5       Onions                  $1.45              15
+6       Bananas                 $3.45              30
+
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '$4<=20 {printf "%s\t%s\n",$0,"*";} $4>20 {print;}' food_list_2.txt 
+No      Item_Name               Price           Quantity
+1       Mangoes                 $3.45              5	*
+2       Apples                  $2.45              25
+3       Pineapples              $4.45              55
+4       Tomatoes                $3.45              25
+5       Onions                  $1.45              15	*
+6       Bananas                 $3.45              30
+	*
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '$4<=20 {printf "%s\t%s\n",$0,"*";} $4>20 {printf "%s\n",$0;}' food_list_2.txt 
+No      Item_Name               Price           Quantity
+1       Mangoes                 $3.45              5	*
+2       Apples                  $2.45              25
+3       Pineapples              $4.45              55
+4       Tomatoes                $3.45              25
+5       Onions                  $1.45              15	*
+6       Bananas                 $3.45              30
+	*
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '$4<=20 {printf "%s\t%s\n",$0,"*";} $4>20 {print $0;}' food_list_2.txt 
+No      Item_Name               Price           Quantity
+1       Mangoes                 $3.45              5	*
+2       Apples                  $2.45              25
+3       Pineapples              $4.45              55
+4       Tomatoes                $3.45              25
+5       Onions                  $1.45              15	*
+6       Bananas                 $3.45              30
+	*
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ awk '$4<=20 {printf "%s\t%s\n",$0,"*";next;} $4>20 {print $0;}' food_list_2.txt 
+No      Item_Name               Price           Quantity
+1       Mangoes                 $3.45              5	*
+2       Apples                  $2.45              25
+3       Pineapples              $4.45              55
+4       Tomatoes                $3.45              25
+5       Onions                  $1.45              15	*
+6       Bananas                 $3.45              30
+	*
+
+link for description:(part-7)
+---------------------
+e.g 17:
+-------
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ cat techmintdeal.list 
+No      Name                                    Price           Type
+1       Mac_OS_X_Cleanup_Suite                  $9.99           Software
+2       Basics_Notebook                         $14.99          Lifestyle
+3       Tactical_Pen                            $25.99          Lifestyle
+4       Scapple                                 $19.00          Unknown
+5       Nano_Tool_Pack                          $11.99          Unknown
+6       Ditto_Bluetooth_Altering_Device         $33.00          Tech
+7       Nano_Prowler_Mini_Drone                 $36.99          Tech
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ cat techmintdeal.list | awk '$4 == "TECH" {print ;}'
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ cat techmintdeal.list | awk '$4 == "Tech" {print ;}'
+6       Ditto_Bluetooth_Altering_Device         $33.00          Tech
+7       Nano_Prowler_Mini_Drone                 $36.99          Tech
+rakesh@rakesh-desktop:~/shell_scripting/awk_tutorials$ cat techmintdeal.list | awk '$4 ~ /Tech/{print}'
+6       Ditto_Bluetooth_Altering_Device         $33.00          Tech
+7       Nano_Prowler_Mini_Drone                 $36.99          Tech
+
+
+
+
+
+
